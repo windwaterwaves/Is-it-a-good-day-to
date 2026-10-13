@@ -738,6 +738,7 @@
     if(pt.temp < 12){ score -= 8; reasons.push(`Air temperature is cool at ${pt.temp.toFixed(0)}°C.`); }
     else if(pt.temp > 20 && pt.cloudcover < 40){ reasons.push('Warm air and good sunshine make it a pleasant day to be at the beach.'); }
 
+    if(hardFail) score = 0;
     score = Math.round(Math.max(0, Math.min(100, score)));
     return { score, hardFail, reasons, warnings, rag: ragFromScore(score, hardFail) };
   }
@@ -803,6 +804,7 @@
     if(RAIN_CODES.includes(pt.weathercode)){ score -= 8; reasons.push('Rain is forecast — visibility and grip may be reduced.'); }
     if(pt.rain48h > T.rainHardFailMm){ score -= 10; reasons.push('Recent heavy rain means water quality may be reduced if you end up in the sea.'); }
 
+    if(hardFail) score = 0;
     score = Math.round(Math.max(0, Math.min(100, score)));
     return { score, hardFail, reasons, warnings, rag: ragFromScore(score, hardFail) };
   }
@@ -847,6 +849,7 @@
 
     if(pt.cloudcover < 25 && pt.temp > 20){ warnings.push('Strong sun and little cloud cover — sunscreen and water are a good idea.'); }
 
+    if(hardFail) score = 0;
     score = Math.round(Math.max(0, Math.min(100, score)));
     return { score, hardFail, reasons, warnings, rag: ragFromScore(score, hardFail) };
   }
