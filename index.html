@@ -442,9 +442,27 @@
       opt.textContent = hh+':00';
       selTime.appendChild(opt);
     }
-    selTime.value = String(nowLondon.getHours()).padStart(2,'0')+':00';
   }
 
+  // Round "now" to the nearest hour (30+ minutes rounds up), carrying over into the
+  // next calendar day if that rounding pushes past 23:00.
+  function roundedNow(){
+    const d = new Date(nowLondon);
+    if(d.getMinutes() >= 30){
+      d.setHours(d.getHours() + 1, 0, 0, 0);
+    } else {
+      d.setMinutes(0, 0, 0);
+    }
+    return d;
+  }
+
+  // Set the date/time dropdowns to the current moment, rounded to the nearest hour.
+  function setDefaultSelection(){
+    const rounded = roundedNow();
+    selDate.value = ymd(rounded);
+    selTime.value = String(rounded.getHours()).padStart(2,'0') + ':00';
+  }
+  
   // ---------------- Fetch + merge live data ----------------
   async function fetchAll(){
     const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}`+
@@ -1021,6 +1039,7 @@
   async function init(){
     buildDateOptions();
     buildTimeOptions();
+    setDefaultSelection();
     updateOnWord();
     selActivity.value = activeActivity;
     try{
